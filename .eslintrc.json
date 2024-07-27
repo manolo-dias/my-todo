@@ -42,6 +42,7 @@
       "arrow-parens": "off",
       "no-shadow": "off",
       "no-multi-spaces":"off",
+      "no-return-assign":"off",
       "no-multiple-empty-lines": "off",
       "quotes": "off",
       "max-len": "off",

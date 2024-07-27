@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import  axios  from 'axios';
+import axios from 'axios';
 
 function App() {
     // representa as tarefas na tela. setTasks eh usado pra manipular seu valor no DOM
@@ -9,19 +9,34 @@ function App() {
     const [checkboxes, setCheckboxes] = useState(JSON.parse(localStorage.getItem('checkboxes')) || {});
     const [ids, setIds] = useState(JSON.parse(localStorage.getItem('ids')) || {});
     const [searchTerm, setSearchTerm] = useState("");
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
     const path = "https://66a53a055dc27a3c190afb3f.mockapi.io/api/v1/activities/";
 
     // Carregar dados do localStorage quando o componente é montado
     useEffect(() => {
-        const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-        const savedCheckboxes = JSON.parse(localStorage.getItem('checkboxes')) || {};
+        axios.get(path)
+            .then(response => {
+                const activity = [];
+                const ckbox = [];
+                response.data.map((item, index) => (
+                    activity[index] = item.activity
+                ));
+                response.data.map((item, index) => (
+                    ckbox[index] = item.checkbox
+                ));
 
-        setTasks(savedTasks);
-        setCheckboxes(savedCheckboxes);
+
+                const savedTasks = activity || [];
+                const savedCheckboxes = ckbox || {};
+
+                setTasks(savedTasks);
+                setCheckboxes(savedCheckboxes);
+            })
+            .catch();
+
+
+
     }, []);
 
     // Atualizar localStorage sempre que as tarefas ou checkboxes mudarem
@@ -42,7 +57,7 @@ function App() {
             const postData = {
                 activity: newTask,
             };
-    
+
             axios.post(path, postData)
                 .then(response => {
                     setResponse(response.data);
@@ -90,7 +105,7 @@ function App() {
     const filteredTasks = tasks.filter((task) => task.toLowerCase().includes(searchTerm.toLowerCase()));
 
 
-    
+
     return (
         <div className="container mx-auto my-10">
             <h1 className="text-center text-3xl font-semibold mb-4">

@@ -1,0 +1,62 @@
+{
+    "env": {
+      "browser": true,
+      "es2021": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:react-hooks/recommended",
+      "plugin:jsx-a11y/recommended",
+      "plugin:import/errors",
+      "plugin:import/warnings",
+      "plugin:import/typescript",
+      "airbnb",
+      "plugin:tailwindcss/recommended"
+    ],
+    "parserOptions": {
+      "ecmaFeatures": {
+        "jsx": true
+      },
+      "ecmaVersion": 12,
+      "sourceType": "module"
+    },
+    "plugins": [
+      "react",
+      "react-hooks",
+      "jsx-a11y",
+      "import",
+      "tailwindcss"
+    ],
+    "rules": {
+      "react/react-in-jsx-scope": "off",
+      "tailwindcss/classnames-order": "warn",
+      "tailwindcss/enforces-shorthand": "warn",
+      "tailwindcss/no-custom-classname": "off",
+      "no-trailing-spaces": "off",
+      "padded-blocks": "off",
+      "eol-last":"off",
+      "no-unused-vars": "off",
+      "indent": "off",
+      "object-shorthand": "off",
+      "arrow-parens": "off",
+      "no-shadow": "off",
+      "no-multi-spaces":"off",
+      "no-multiple-empty-lines": "off",
+      "quotes": "off",
+      "max-len": "off",
+      "prefer-arrow-callback": "off",
+      "radix": "off",
+      "react/jsx-filename-extension": "off",
+      "react/no-array-index-key": "off",
+      "jsx-a11y/label-has-associated-control": "off",
+      "react/button-has-type": "off",
+      "react/jsx-indent": "off",
+      "react/jsx-indent-props": "off"
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    }
+}

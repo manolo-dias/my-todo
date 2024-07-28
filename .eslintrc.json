@@ -35,6 +35,7 @@
       "tailwindcss/no-custom-classname": "off",
       "no-trailing-spaces": "off",
       "padded-blocks": "off",
+      "no-sequences": "off",
       "eol-last":"off",
       "no-unused-vars": "off",
       "indent": "off",

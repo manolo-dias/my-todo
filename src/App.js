@@ -3,40 +3,37 @@ import './App.css';
 import axios from 'axios';
 
 function App() {
-    // representa as tarefas na tela. setTasks eh usado pra manipular seu valor no DOM
+    // representa as tarefas na tela. setTasks eh usado pra manipular seu valor no DOM além de popular a tela com os dados do cache
     const [tasks, setTasks] = useState(JSON.parse(localStorage.getItem('tasks')) || []);
     const [newTask, setNewTask] = useState("");
     const [checkboxes, setCheckboxes] = useState(JSON.parse(localStorage.getItem('checkboxes')) || {});
     const [ids, setIds] = useState(JSON.parse(localStorage.getItem('ids')) || {});
     const [searchTerm, setSearchTerm] = useState("");
-    const [response, setResponse] = useState(null);
-    const [error, setError] = useState(null);
     const path = "https://66a53a055dc27a3c190afb3f.mockapi.io/api/v1/activities/";
 
-    // Carregar dados do localStorage quando o componente é montado
+    // Busca dados da api
     useEffect(() => {
         axios.get(path)
             .then(response => {
                 const activity = [];
                 const ckbox = [];
-                response.data.map((item, index) => (
-                    activity[index] = item.activity
-                ));
-                response.data.map((item, index) => (
-                    ckbox[index] = item.checkbox
-                ));
+                const ids = [];
 
-
+                response.data.map((item, index) => (
+                    activity[index] = item.activity,
+                    ckbox[index] = item.checkbox,
+                    ids[index] = item.id
+                ));
+                
                 const savedTasks = activity || [];
                 const savedCheckboxes = ckbox || {};
+                const savedIds = ids || {};
 
                 setTasks(savedTasks);
                 setCheckboxes(savedCheckboxes);
+                setIds(savedIds);
             })
             .catch();
-
-
-
     }, []);
 
     // Atualizar localStorage sempre que as tarefas ou checkboxes mudarem
@@ -45,7 +42,7 @@ function App() {
         localStorage.setItem('checkboxes', JSON.stringify(checkboxes));
         localStorage.setItem('id', JSON.stringify(ids));
 
-    }, [tasks, checkboxes]);
+    }, [tasks, checkboxes, ids]);
 
     // Função para adicionar nova tarefa
     const handleAddTask = (event) => {
@@ -59,24 +56,25 @@ function App() {
             };
 
             axios.post(path, postData)
-                .then(response => {
-                    setResponse(response.data);
-                    setError(null);
-                })
-                .catch(error => {
-                    setError(error);
-                    setResponse(null);
-                });
+            .catch();
         }
     };
 
     // Função para deletar uma tarefa
     const handleDeleteTask = (index) => {
-        const updatedTasks = tasks.filter((_, i) => i !== index);
-        const updatedCheckboxes = { ...checkboxes };
-        delete updatedCheckboxes[index];
-        setTasks(updatedTasks);
-        setCheckboxes(updatedCheckboxes);
+        axios.delete(path + ids[index])
+            .then(() => {
+                const updatedTasks = tasks.filter((_, i) => i !== index);
+                const updatedCheckboxes = { ...checkboxes };
+                const updatedIds = ids.filter((_, i) => i !== index);
+                delete updatedCheckboxes[index];
+                setTasks(updatedTasks);
+                setCheckboxes(updatedCheckboxes);
+                setIds(updatedIds);
+            })
+            .catch(error => {
+                console.error(error);
+            });
     };
 
     // Função para editar uma tarefa

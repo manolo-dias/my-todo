@@ -9,7 +9,7 @@ function App() {
     const [checkboxes, setCheckboxes] = useState(JSON.parse(localStorage.getItem('checkboxes')) || {});
     const [ids, setIds] = useState(JSON.parse(localStorage.getItem('ids')) || {});
     const [searchTerm, setSearchTerm] = useState("");
-    const path = "https://66a53a055dc27a3c190afb3f.mockapi.io/api/v1/activities/";
+    const path = " http://localhost:5000/api/v1/activities/";
 
     // Busca dados da api
     useEffect(() => {
@@ -21,10 +21,10 @@ function App() {
 
                 response.data.map((item, index) => (
                     activity[index] = item.activity,
-                    ckbox[index] = item.checkbox,
+                    ckbox[index] = item.state,
                     ids[index] = item.id
                 ));
-                
+
                 const savedTasks = activity || [];
                 const savedCheckboxes = ckbox || {};
                 const savedIds = ids || {};
@@ -56,7 +56,7 @@ function App() {
             };
 
             axios.post(path, postData)
-            .catch();
+                .catch();
         }
     };
 
@@ -82,16 +82,38 @@ function App() {
         const newText = prompt("Digite o novo nome", tasks[index]);
         if (newText !== null) {
             const updatedTasks = tasks.map((task, i) => (i === index ? newText.trim() : task));
-            setTasks(updatedTasks);
+
+            axios.patch(path + ids[index], {
+                activity: updatedTasks[index],
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json, text/plain, */*',
+                    'Referrer-Policy': 'strict-origin-when-cross-origin',
+                },
+            }).then(() => {
+                setTasks(updatedTasks);
+            })
+                .catch(error => {
+                    console.error(error);
+                });
         }
     };
 
     // Função para lidar com mudanças no estado do checkbox
     const handleCheckboxChange = (index) => {
-        setCheckboxes((prev) => ({
-            ...prev,
-            [index]: !prev[index],
-        }));
+        axios.patch(path + ids[index], {
+            state: !checkboxes[index],
+        }).then(() => {
+            setCheckboxes((prev) => ({
+                ...prev,
+                [index]: !prev[index],
+            }));
+        })
+            .catch(error => {
+                console.error(error);
+            });
+
     };
 
     // Função para atualizar o termo de pesquisa

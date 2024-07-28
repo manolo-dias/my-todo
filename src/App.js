@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import axios from 'axios';
@@ -6,10 +7,14 @@ function App() {
     // representa as tarefas na tela. setTasks eh usado pra manipular seu valor no DOM além de popular a tela com os dados do cache
     const [tasks, setTasks] = useState(JSON.parse(localStorage.getItem('tasks')) || []);
     const [newTask, setNewTask] = useState("");
-    const [checkboxes, setCheckboxes] = useState(JSON.parse(localStorage.getItem('checkboxes')) || {});
+    const [checkboxes, setCheckboxes] = useState(JSON.parse(localStorage.getItem('state')) || {});
     const [ids, setIds] = useState(JSON.parse(localStorage.getItem('ids')) || {});
     const [searchTerm, setSearchTerm] = useState("");
-    const path = " http://localhost:5000/api/v1/activities/";
+
+
+
+
+    const path = "http://localhost:5000/api/v1/activities/";
 
     // Busca dados da api
     useEffect(() => {
@@ -39,7 +44,7 @@ function App() {
     // Atualizar localStorage sempre que as tarefas ou checkboxes mudarem
     useEffect(() => {
         localStorage.setItem('tasks', JSON.stringify(tasks));
-        localStorage.setItem('checkboxes', JSON.stringify(checkboxes));
+        localStorage.setItem('state', JSON.stringify(checkboxes));
         localStorage.setItem('id', JSON.stringify(ids));
 
     }, [tasks, checkboxes, ids]);
@@ -125,7 +130,6 @@ function App() {
     const filteredTasks = tasks.filter((task) => task.toLowerCase().includes(searchTerm.toLowerCase()));
 
 
-
     return (
         <div className="container mx-auto my-10">
             <h1 className="text-center text-3xl font-semibold mb-4">
@@ -163,14 +167,16 @@ function App() {
                     </div>
                     <ul id="todo-list">
                         {filteredTasks.map((task, index) => (
-                            <div className="block w-full px-4 py-2 my-2 font-medium text-center text-white capitalize transition-colors duration-300 transform bg-teal-400 rounded-md hover:bg-teal-500 focus:outline-none focus:ring focus:ring-teal-300 focus:ring-opacity-80">
+                            <div class="task" className="block ease-in-out hover:scale-110 w-full px-4 py-2 my-2 font-medium text-center text-white capitalize transition-colors duration-300 transform bg-teal-400 rounded-md hover:bg-teal-500 focus:outline-none focus:ring focus:ring-teal-300 focus:ring-opacity-80"
+                                onClick={() => handleCheckboxChange(index)}
+                            >
 
                                 <li key={index} className=" w-full flex items-center justify-between py-4">
                                     <label className="flex items-center">
                                         <input
                                             type="checkbox"
                                             className="mr-2"
-                                            checked={checkboxes[index] || false}
+                                            checked={checkboxes[index]}
                                             onChange={() => handleCheckboxChange(index)}
                                         />
                                         {/* se a checkbox for marcada, grifa o texto */}
@@ -201,6 +207,7 @@ function App() {
                                         </button>
                                     </div>
                                 </li>
+
                             </div>
                         ))}
                     </ul>

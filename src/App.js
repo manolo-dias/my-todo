@@ -11,14 +11,21 @@ function App() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedOption, setSelectedOption] = useState('all');
     const [renderHandler, forceRender] = useState(false);
-    
+    const [taskModel, setTaskData] = useState([{
+        id: 0,
+        status: false,
+        activity: ''
+    }]);
+
     const path = "http://localhost:5000/api/v1/activities/";
 
 
     const render = () => {
         forceRender(!renderHandler)
     }
-   
+
+
+
     // Busca dados da api
     useEffect(() => {
         axios.get(path)
@@ -29,7 +36,7 @@ function App() {
 
                 response.data.forEach((item, index) => {
                     activity[index] = item.activity;
-                    ckbox[index] = item.status;
+                    ckbox[item.id] = item.status;
                     ids[index] = item.id;
                 });
 
@@ -40,9 +47,13 @@ function App() {
                 setTasks(savedTasks);
                 setCheckboxes(savedCheckboxes);
                 setIds(savedIds);
+
+                setTaskData(response.data)
+
             })
             .catch(error => console.error(error));
     }, []);
+
 
     // Atualizar localStorage sempre que as tarefas ou checkboxes mudarem
     useEffect(() => {
@@ -116,6 +127,7 @@ function App() {
 
     // Função para lidar com mudanças no estado do checkbox
     const handleCheckboxChange = (index) => {
+        
         axios.patch(path + ids[index], {
             status: !checkboxes[index],
         }).then(() => {
@@ -123,6 +135,7 @@ function App() {
                 ...prev,
                 [index]: !prev[index],
             }));
+
         })
             .catch(error => {
                 console.error(error);
@@ -137,7 +150,7 @@ function App() {
 
 
     const handleFilters = (option) => {
-        switch(option){
+        switch (option) {
             case 'done':
                 localStorage.setItem('tasks', JSON.stringify((tasks.filter((i, index) => checkboxes[index] === true))));
                 break;
@@ -155,10 +168,15 @@ function App() {
         setSelectedOption(event.target.value);
         handleFilters(event.target.value);
         render()
-    }; 
+    };
 
     // Função para filtrar as tarefas com base no termo de pesquisa
-    const filteredTasks = JSON.parse(localStorage.getItem('tasks')).filter((task) => task.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filteredTasks = () => {
+        if (localStorage.getItem('tasks') !== null)
+            return JSON.parse(localStorage.getItem('tasks')).filter((task) => task.toLowerCase().includes(searchTerm.toLowerCase()));
+
+        return tasks;
+    }
 
     return (
         <div className="container grid mx-auto my-10">
@@ -167,53 +185,52 @@ function App() {
                 {/* Menu de filtros */}
 
                 <details className='absolute'>
-            <summary className="list-none cursor-pointer pt-4 flex pl-10 items-center">
-                <img
-                    src=".\menu-svgrepo-com.svg"
-                    alt="Menu"
-                    className="h-6 w-6"
-                />
-            </summary>
-            <ul className="menu dropdown-content bg-white bg-base-100 rounded-box z-[1] w-fit rounded-md p-2 shadow">
-                <div className="flex">
-                    <input 
-                        type="radio" 
-                        className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500" 
-                        id="option-todas" 
-                        name="taskFilter" 
-                        value="all" 
-                        checked={selectedOption === 'all'} 
-                        onChange={handleChange} 
-                    />
-                    <label htmlFor="option-todas" className="text-sm text-gray-500 ml-3">Todas</label>
-                </div>
-                <div className="flex">
-                    <input 
-                        type="radio" 
-                        className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500" 
-                        id="option-concluidas" 
-                        name="taskFilter" 
-                        value="done" 
-                        checked={selectedOption === 'done'} 
-                        onChange={handleChange} 
-                    />
-                    <label htmlFor="option-concluidas" className="text-sm text-gray-500 ml-3">Concluidas</label>
-                </div>
-                <div className="flex">
-                    <input 
-                        type="radio" 
-                        className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500" 
-                        id="option-nao-concluidas" 
-                        name="taskFilter" 
-                        value="todo" 
-                        checked={selectedOption === 'todo'} 
-                        onChange={handleChange} 
-                    />
-                    <label htmlFor="option-nao-concluidas" className="text-sm text-gray-500 ml-3">Não concluídas</label>
-                </div>
-            </ul>
-        </details>
-                {/* onClick={() =>handleFilters('incomplete')} */}
+                    <summary className="list-none cursor-pointer pt-4 flex pl-10 items-center">
+                        <img
+                            src=".\menu-svgrepo-com.svg"
+                            alt="Menu"
+                            className="h-6 w-6"
+                        />
+                    </summary>
+                    <ul className="menu dropdown-content bg-white bg-base-100 rounded-box z-[1] w-fit rounded-md p-2 shadow">
+                        <div className="flex">
+                            <input
+                                type="radio"
+                                className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500"
+                                id="option-todas"
+                                name="taskFilter"
+                                value="all"
+                                checked={selectedOption === 'all'}
+                                onChange={handleChange}
+                            />
+                            <label htmlFor="option-todas" className="text-sm text-gray-500 ml-3">Todas</label>
+                        </div>
+                        <div className="flex">
+                            <input
+                                type="radio"
+                                className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500"
+                                id="option-concluidas"
+                                name="taskFilter"
+                                value="done"
+                                checked={selectedOption === 'done'}
+                                onChange={handleChange}
+                            />
+                            <label htmlFor="option-concluidas" className="text-sm text-gray-500 ml-3">Concluidas</label>
+                        </div>
+                        <div className="flex">
+                            <input
+                                type="radio"
+                                className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500"
+                                id="option-nao-concluidas"
+                                name="taskFilter"
+                                value="todo"
+                                checked={selectedOption === 'todo'}
+                                onChange={handleChange}
+                            />
+                            <label htmlFor="option-nao-concluidas" className="text-sm text-gray-500 ml-3">Não concluídas</label>
+                        </div>
+                    </ul>
+                </details>
 
                 {/* Título  */}
                 <h1 className="flex flex-grow mt-1 justify-center text-3xl font-semibold mb-4 px-16">
@@ -224,17 +241,7 @@ function App() {
 
             {/* LISTA TODO */}
             <div className="flex justify-center items-center">
-                {/* BOTÃO DE ADICIONAR TAREFAS */}
 
-                <div class="absolute top-24">
-                    <button
-                        className="bg-teal-400 hover:bg-teal-500 focus:ring-teal-300 text-white font-bold py-2 px-6 rounded-3xl relative"
-                        onClick={handleAddTask}
-                    >
-                        + Nova
-                    </button>
-
-                </div>
             </div>
             <div className="md:w-1/2 mx-auto mt-4">
                 <div className="bg-[#0ED5B74D] shadow-2xl p-6">
@@ -251,14 +258,28 @@ function App() {
                                 onChange={(e) => searchValue(e.target.value)}
                             />
                         </div>
+
+                        {/* BOTÃO DE ADICIONAR TAREFAS */}
+
+                        <div class="flex ml-4">
+                            <button
+                                className=" whitespace-nowrap bg-teal-400 hover:bg-teal-500 focus:ring-teal-300 text-white font-bold py-2 px-6 rounded-3xl"
+                                onClick={handleAddTask}
+                            >
+                                + Nova
+                            </button>
+
+                        </div>
                     </div>
                     <ul id="todo-list">
-                        {filteredTasks.map((task, index) => (
+                        {tasks.map((task, index) => (
 
                             // tafefas são geradas dentro dessa div
-                            <div id="tasksDivId" role="tasks elements" key={index} className="block ease-in-out hover:scale-110 w-full px-4 py-2 my-2 font-medium text-center text-black capitalize transition-colors duration-300 transform focus:outline-none focus:ring bg-teal-400 rounded-md hover:bg-teal-500 focus:ring-teal-300 focus:ring-opacity-80"
-                                onClick={() => handleCheckboxChange(index)}
+                            <div role="tasks elements" key={index} className="block ease-in-out hover:scale-110 w-full px-4 py-2 my-2 font-medium text-center text-black capitalize transition-colors duration-300 transform focus:outline-none focus:ring bg-teal-400 rounded-md hover:bg-teal-500 focus:ring-teal-300 focus:ring-opacity-80"
+                                onClick={() => handleCheckboxChange(index) }
+                                style={{ display: (selectedOption === 'all' || (selectedOption === 'done' && checkboxes[index]) || (selectedOption === 'todo' && !checkboxes[index])) ? 'block' : 'none' }}
                             >
+                                
 
                                 {/* checkboxes */}
                                 <li className="w-full flex items-center justify-between py-4">
@@ -285,7 +306,7 @@ function App() {
                                         </button>
                                         <button
                                             className="align-middle"
-                                            onClick={() => {handleEditTask(index); handleChange}}
+                                            onClick={() => { handleEditTask(index) }}
                                         >
                                             <img
                                                 src=".\pencil-svgrepo-com.svg"

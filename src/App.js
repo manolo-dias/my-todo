@@ -1,67 +1,89 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import  axios  from 'axios';
+import axios from 'axios';
 
 function App() {
-    // representa as tarefas na tela. setTasks eh usado pra manipular seu valor no DOM
+    // representa as tarefas na tela. setTasks eh usado pra manipular seu valor no DOM além de popular a tela com os dados do cache
     const [tasks, setTasks] = useState(JSON.parse(localStorage.getItem('tasks')) || []);
     const [newTask, setNewTask] = useState("");
-    const [checkboxes, setCheckboxes] = useState(JSON.parse(localStorage.getItem('checkboxes')) || {});
-    const [ids, setIds] = useState(JSON.parse(localStorage.getItem('ids')) || {});
+    const [checkboxes, setCheckboxes] = useState(JSON.parse(localStorage.getItem('status')) || {});
+    const [ids, setIds] = useState(JSON.parse(localStorage.getItem('id')) || {});
     const [searchTerm, setSearchTerm] = useState("");
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
-    const [response, setResponse] = useState(null);
-    const [error, setError] = useState(null);
-    const path = "https://66a53a055dc27a3c190afb3f.mockapi.io/api/v1/activities/";
 
-    // Carregar dados do localStorage quando o componente é montado
+    const path = "http://localhost:5000/api/v1/activities/";
+
+
+    // Busca dados da api
     useEffect(() => {
-        const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-        const savedCheckboxes = JSON.parse(localStorage.getItem('checkboxes')) || {};
+        axios.get(path)
+            .then(response => {
+                const activity = [];
+                const ckbox = [];
+                const ids = [];
 
-        setTasks(savedTasks);
-        setCheckboxes(savedCheckboxes);
+                response.data.forEach((item, index) => {
+                    activity[index] = item.activity;
+                    ckbox[index] = item.status;
+                    ids[index] = item.id;
+                });
+
+                const savedTasks = activity || [];
+                const savedCheckboxes = ckbox || {};
+                const savedIds = ids || {};
+
+                setTasks(savedTasks);
+                setCheckboxes(savedCheckboxes);
+                setIds(savedIds);
+            })
+            .catch(error => console.error(error));
     }, []);
 
     // Atualizar localStorage sempre que as tarefas ou checkboxes mudarem
     useEffect(() => {
         localStorage.setItem('tasks', JSON.stringify(tasks));
-        localStorage.setItem('checkboxes', JSON.stringify(checkboxes));
+        localStorage.setItem('status', JSON.stringify(checkboxes));
         localStorage.setItem('id', JSON.stringify(ids));
-
-    }, [tasks, checkboxes]);
+    }, [tasks, checkboxes, ids]);
 
     // Função para adicionar nova tarefa
-    const handleAddTask = (event) => {
-        event.preventDefault();
-        if (newTask.trim() !== "") {
-            const updatedTasks = [...tasks, newTask.trim()];
+    const handleAddTask = () => {
+        const newText = prompt("Digite o novo nome");
+
+        if (newText && newText.trim() !== "") {
+            const updatedTasks = [...tasks, newText.trim()];
             setTasks(updatedTasks);
-            setNewTask("");
+
             const postData = {
-                activity: newTask,
+                activity: newText.trim(),
             };
-    
+
             axios.post(path, postData)
                 .then(response => {
-                    setResponse(response.data);
-                    setError(null);
+                    const newId = response.data.id;
+                    const updatedIds = [...ids, newId];
+                    setIds(updatedIds);
+                    localStorage.setItem('id', JSON.stringify(updatedIds));
                 })
-                .catch(error => {
-                    setError(error);
-                    setResponse(null);
-                });
+                .catch(error => console.error(error));
         }
     };
 
     // Função para deletar uma tarefa
     const handleDeleteTask = (index) => {
-        const updatedTasks = tasks.filter((_, i) => i !== index);
-        const updatedCheckboxes = { ...checkboxes };
-        delete updatedCheckboxes[index];
-        setTasks(updatedTasks);
-        setCheckboxes(updatedCheckboxes);
+        axios.delete(path + ids[index])
+            .then(() => {
+                const updatedTasks = tasks.filter((_, i) => i !== index);
+                const updatedCheckboxes = { ...checkboxes };
+                const updatedIds = ids.filter((_, i) => i !== index);
+                delete updatedCheckboxes[index];
+                setTasks(updatedTasks);
+                setCheckboxes(updatedCheckboxes);
+                setIds(updatedIds);
+            })
+            .catch(error => {
+                console.error(error);
+            });
     };
 
     // Função para editar uma tarefa
@@ -69,16 +91,38 @@ function App() {
         const newText = prompt("Digite o novo nome", tasks[index]);
         if (newText !== null) {
             const updatedTasks = tasks.map((task, i) => (i === index ? newText.trim() : task));
-            setTasks(updatedTasks);
+
+            axios.patch(path + ids[index], {
+                activity: updatedTasks[index],
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json, text/plain, */*',
+                    'Referrer-Policy': 'strict-origin-when-cross-origin',
+                },
+            }).then(() => {
+                setTasks(updatedTasks);
+            })
+                .catch(error => {
+                    console.error(error);
+                });
         }
     };
 
     // Função para lidar com mudanças no estado do checkbox
     const handleCheckboxChange = (index) => {
-        setCheckboxes((prev) => ({
-            ...prev,
-            [index]: !prev[index],
-        }));
+        axios.patch(path + ids[index], {
+            status: !checkboxes[index],
+        }).then(() => {
+            setCheckboxes((prev) => ({
+                ...prev,
+                [index]: !prev[index],
+            }));
+        })
+            .catch(error => {
+                console.error(error);
+            });
+
     };
 
     // Função para atualizar o termo de pesquisa
@@ -89,32 +133,51 @@ function App() {
     // Função para filtrar as tarefas com base no termo de pesquisa
     const filteredTasks = tasks.filter((task) => task.toLowerCase().includes(searchTerm.toLowerCase()));
 
-
-    
     return (
-        <div className="container mx-auto my-10">
-            <h1 className="text-center text-3xl font-semibold mb-4">
-                My Todo
-            </h1>
-            <div className="md:w-1/2 mx-auto">
-                <div className="bg-white shadow-md rounded-lg p-6">
-                    <div className="flex gap-4">
-                        <form id="todo-form" onSubmit={handleAddTask} className="flex flex-col gap-4">
-                            <div className="flex gap-2">
-                                <input
-                                    type="text"
-                                    className="px-4 py-2 rounded-lg border-gray-300 focus:outline-none focus:border-blue-500"
-                                    id="todo-input"
-                                    placeholder="Adicionar nova tarefa"
-                                    value={newTask}
-                                    onChange={(e) => setNewTask(e.target.value)}
-                                    required
-                                />
-                                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                    Adicionar
-                                </button>
-                            </div>
-                        </form>
+        <div className="container grid mx-auto my-10">
+
+            <div className="flex md:w-1/2 justify-self-center bg-[#0ED5B74D]">
+                {/* Ícone no início */}
+                <div className="flex ml-10 items-center ">
+                <button
+                    
+                    onClick={() => handleDeleteTask(index)}
+                >
+                    <img
+                        src=".\menu-svgrepo-com.svg"
+                        alt="Delete"
+                        className="h-6 w-6"
+                    />
+                </button>
+                </div>
+
+                {/* Título  */}
+                <h1 className="flex flex-grow mt-1 justify-center text-3xl font-semibold mb-4">
+                    My Todo
+                </h1>
+            </div>
+
+
+            {/* LISTA TODO */}
+            <div className="flex justify-center items-center">
+                {/* BOTÃO DE ADICIONAR TAREFAS */}
+
+                <div class="absolute top-24">
+                    <button
+                        className="bg-teal-400 hover:bg-teal-500 focus:ring-teal-300 text-white font-bold py-2 px-6 rounded-3xl relative"
+                        onClick={handleAddTask}
+                    >
+                        +Nova
+                    </button>
+
+                </div>
+            </div>
+            <div className="md:w-1/2 mx-auto mt-4">
+                <div className="bg-[#0ED5B74D] shadow-2xl p-6">
+                    <div className="flex items-center">
+
+
+                        {/* AREA DE PESQUISA DE TAREFAS */}
                         <div className="flex gap-2 w-full">
                             <input
                                 type="text"
@@ -122,31 +185,33 @@ function App() {
                                 id="todo-input"
                                 placeholder="Pesquisar tarefa"
                                 onChange={(e) => searchValue(e.target.value)}
-                                required
                             />
                         </div>
                     </div>
                     <ul id="todo-list">
                         {filteredTasks.map((task, index) => (
-                            <div className="block w-full px-4 py-2 my-2 font-medium text-center text-white capitalize transition-colors duration-300 transform bg-teal-400 rounded-md hover:bg-teal-500 focus:outline-none focus:ring focus:ring-teal-300 focus:ring-opacity-80">
+                            
+                        // tafefas são geradas dentro dessa div
+                            <div id="tasksDivId" role="tasks elements" key={index} className="block ease-in-out hover:scale-110 w-full px-4 py-2 my-2 font-medium text-center text-black capitalize transition-colors duration-300 transform focus:outline-none focus:ring bg-teal-400 rounded-md hover:bg-teal-500 focus:ring-teal-300 focus:ring-opacity-80"
+                                onClick={() => handleCheckboxChange(index)}
+                            >
 
-                                <li key={index} className=" w-full flex items-center justify-between py-4">
-                                    <label className="flex items-center">
+                                {/* checkboxes */}
+                                <li className="w-full flex items-center justify-between py-4">
+                                    <label className="flex items-center rounded">
                                         <input
                                             type="checkbox"
-                                            className="mr-2"
-                                            checked={checkboxes[index] || false}
+                                            className="mr-2 "
+                                            checked={checkboxes[index]}
                                             onChange={() => handleCheckboxChange(index)}
                                         />
                                         {/* se a checkbox for marcada, grifa o texto */}
                                         <span className={checkboxes[index] ? 'line-through' : ''}>{task}</span>
-
                                     </label>
                                     <div>
                                         <button
                                             className="mr-2 align-middle"
                                             onClick={() => handleDeleteTask(index)}
-
                                         >
                                             <img
                                                 src=".\trash-slash-alt-svgrepo-com.svg"

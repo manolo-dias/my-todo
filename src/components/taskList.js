@@ -33,7 +33,6 @@ const TaskList = ({
                                 type="checkbox"
                                 className="mr-2"
                                 checked={checkboxes[index]}
-                                onChange={() => handleCheckboxChange(index)}
                             />
                             {/* se a checkbox for marcada, grifa o texto */}
                             <span className={checkboxes[index] ? 'line-through' : ''}>{task}</span>

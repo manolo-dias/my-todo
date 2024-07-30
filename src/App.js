@@ -167,7 +167,7 @@ function App() {
     }
 
     return (
-        <div className="container grid md:w-1/2 mx-auto my-10">
+        <div className= "mx-auto ">
 
             <div className="flex px-2 w-full justify-self-center bg-[#0ED5B74D]">
                 {/* Menu de filtros */}
@@ -227,22 +227,18 @@ function App() {
                 </h1>
             </div>
 
-
-            {/* LISTA TODO */}
-            <div className="flex justify-center items-center">
-
-            </div>
-            <div className="w-full mt-4">
+            <div className="md:w-1/2 mx-auto mt-4">
                 <div className="bg-[#0ED5B74D] shadow-2xl p-6">
                     <div className="flex items-center">
 
 
-                        {/* AREA DE PESQUISA DE TAREFAS */}
-                        <div className="flex gap-2 w-full">
+                       <div className="flex mb-[18px] w-full">
+                         {/* AREA DE PESQUISA DE TAREFAS */}
+                         <div className="flex gap-2 w-full">
                             <input
                                 id="new-task-term-id"
                                 type="text"
-                                className="w-full px-4 py-2 rounded-lg border-gray-300 focus:outline-none focus:border-blue-500"
+                                className="w-full px-4 py-2  rounded-lg border-gray-300 focus:outline-none focus:border-blue-500"
                                 placeholder="Adicionar tarefa"
                             />
                         </div>
@@ -251,13 +247,14 @@ function App() {
 
                         <div class="flex ml-4">
                             <button
-                                className=" whitespace-nowrap bg-teal-400 hover:bg-teal-500 focus:ring-teal-300 text-white font-bold py-2 px-6 rounded-3xl"
+                                className=" whitespace-nowrap  bg-teal-400 hover:bg-teal-500 focus:ring-teal-300 text-white font-bold py-2 px-6 rounded-3xl"
                                 onClick={handleAddTask}
                             >
                                 + Nova
                             </button>
 
                         </div>
+                       </div>
                     </div>
 
                     <TaskList

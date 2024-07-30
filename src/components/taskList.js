@@ -10,12 +10,12 @@ const TaskList = ({
     handleEditTask
 }) => {
     return (
-        <ul id="todo-list">
+        <ul id="todo-list" className="buttons">
             {tasks.map((task, index) => (
                 <div
                     role="tasks elements"
                     key={index}
-                    className="block ease-in-out hover:scale-110 w-full px-4 py-2 my-2 font-medium text-center text-black capitalize transition-colors duration-300 transform focus:outline-none focus:ring bg-teal-400 rounded-md hover:bg-teal-500 focus:ring-teal-300 focus:ring-opacity-80"
+                    className="block mb-5 ease-in-out hover:scale-[102%] w-full px-4 py-2 my-2 font-medium text-center text-black capitalize transition-transform duration-300 transform focus:outline-none focus:ring bg-white rounded-md hover:bg-teal-500 focus:ring-opacity-80"
                     onClick={() => handleCheckboxChange(index)}
                     style={{
                         display:

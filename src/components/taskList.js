@@ -4,7 +4,6 @@ import React from 'react';
 const TaskList = ({
     tasks,
     checkboxes,
-    ids,
     selectedOption,
     handleCheckboxChange,
     handleDeleteTask,

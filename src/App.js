@@ -11,16 +11,9 @@ function App() {
     const [ids, setIds] = useState(JSON.parse(localStorage.getItem('id')) || {});
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedOption, setSelectedOption] = useState('all');
-    const [renderHandler, forceRender] = useState(false);
    
 
     const path = "http://localhost:5000/api/v1/activities/";
-
-
-    const render = () => {
-        forceRender(!renderHandler)
-    }
-
 
 
     // Busca dados da api
@@ -55,7 +48,7 @@ function App() {
         localStorage.setItem('tasks', JSON.stringify(tasks));
         localStorage.setItem('status', JSON.stringify(checkboxes));
         localStorage.setItem('id', JSON.stringify(ids));
-    }, [tasks, checkboxes, ids, forceRender]);
+    }, [tasks, checkboxes, ids]);
 
     // Função para adicionar nova tarefa
     const handleAddTask = () => {
@@ -162,7 +155,6 @@ function App() {
     const handleChange = (event) => {
         setSelectedOption(event.target.value);
         handleFilters(event.target.value);
-        render()
     };
 
     // Função para filtrar as tarefas com base no termo de pesquisa
@@ -174,9 +166,9 @@ function App() {
     }
 
     return (
-        <div className="container grid mx-auto my-10">
+        <div className="container grid md:w-1/2 mx-auto my-10">
 
-            <div className="flex md:w-1/2 px-2 justify-self-center bg-[#0ED5B74D]">
+            <div className="flex px-2 w-full justify-self-center bg-[#0ED5B74D]">
                 {/* Menu de filtros */}
 
                 <details className='absolute'>
@@ -228,7 +220,7 @@ function App() {
                 </details>
 
                 {/* Título  */}
-                <h1 className="flex flex-grow mt-1 justify-center text-3xl font-semibold mb-4 px-16">
+                <h1 className="flex flex-grow mt-1 justify-center text-3xl font-semibold mb-4 ">
                     My Todo
                 </h1>
             </div>
@@ -238,7 +230,7 @@ function App() {
             <div className="flex justify-center items-center">
 
             </div>
-            <div className="md:w-1/2 mx-auto mt-4">
+            <div className="w-full mt-4">
                 <div className="bg-[#0ED5B74D] shadow-2xl p-6">
                     <div className="flex items-center">
 
@@ -270,7 +262,7 @@ function App() {
                     <TaskList
                         tasks={tasks}
                         checkboxes={checkboxes}
-                        ids={ids}
+                        selectedOption={selectedOption}
                         handleCheckboxChange={handleCheckboxChange}
                         handleDeleteTask={handleDeleteTask}
                         handleEditTask={handleEditTask}

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import axios from 'axios';
+import TaskList from './components/taskList';
 
 function App() {
     // representa as tarefas na tela. setTasks eh usado pra manipular seu valor no DOM além de popular a tela com os dados do cache
@@ -11,11 +12,7 @@ function App() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedOption, setSelectedOption] = useState('all');
     const [renderHandler, forceRender] = useState(false);
-    const [taskModel, setTaskData] = useState([{
-        id: 0,
-        status: false,
-        activity: ''
-    }]);
+   
 
     const path = "http://localhost:5000/api/v1/activities/";
 
@@ -47,8 +44,6 @@ function App() {
                 setTasks(savedTasks);
                 setCheckboxes(savedCheckboxes);
                 setIds(savedIds);
-
-                setTaskData(response.data)
 
             })
             .catch(error => console.error(error));
@@ -175,7 +170,7 @@ function App() {
         if (localStorage.getItem('tasks') !== null)
             return JSON.parse(localStorage.getItem('tasks')).filter((task) => task.toLowerCase().includes(searchTerm.toLowerCase()));
 
-        return tasks;
+        return [];
     }
 
     return (
@@ -271,54 +266,15 @@ function App() {
 
                         </div>
                     </div>
-                    <ul id="todo-list">
-                        {tasks.map((task, index) => (
 
-                            // tafefas são geradas dentro dessa div
-                            <div role="tasks elements" key={index} className="block ease-in-out hover:scale-110 w-full px-4 py-2 my-2 font-medium text-center text-black capitalize transition-colors duration-300 transform focus:outline-none focus:ring bg-teal-400 rounded-md hover:bg-teal-500 focus:ring-teal-300 focus:ring-opacity-80"
-                                onClick={() => handleCheckboxChange(index) }
-                                style={{ display: (selectedOption === 'all' || (selectedOption === 'done' && checkboxes[index]) || (selectedOption === 'todo' && !checkboxes[index])) ? 'block' : 'none' }}
-                            >
-                                
-
-                                {/* checkboxes */}
-                                <li className="w-full flex items-center justify-between py-4">
-                                    <label className="flex items-center">
-                                        <input
-                                            type="checkbox"
-                                            className="mr-2 "
-                                            checked={checkboxes[index]}
-                                            onChange={() => {handleCheckboxChange(index); handleChange}}
-                                        />
-                                        {/* se a checkbox for marcada, grifa o texto */}
-                                        <span className={checkboxes[index] ? 'line-through' : ''}>{task}</span>
-                                    </label>
-                                    <div>
-                                        <button
-                                            className="mr-2 align-middle"
-                                            onClick={() => handleDeleteTask(index)}
-                                        >
-                                            <img
-                                                src=".\trash-slash-alt-svgrepo-com.svg"
-                                                alt="Delete"
-                                                className="w-6 h-6"
-                                            />
-                                        </button>
-                                        <button
-                                            className="align-middle"
-                                            onClick={() => { handleEditTask(index) }}
-                                        >
-                                            <img
-                                                src=".\pencil-svgrepo-com.svg"
-                                                alt="Edit"
-                                                className="w-6 h-6"
-                                            />
-                                        </button>
-                                    </div>
-                                </li>
-                            </div>
-                        ))}
-                    </ul>
+                    <TaskList
+                        tasks={tasks}
+                        checkboxes={checkboxes}
+                        ids={ids}
+                        handleCheckboxChange={handleCheckboxChange}
+                        handleDeleteTask={handleDeleteTask}
+                        handleEditTask={handleEditTask}
+                    />
                 </div>
             </div>
         </div>

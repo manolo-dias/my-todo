@@ -11,7 +11,7 @@ function App() {
     const [ids, setIds] = useState(JSON.parse(localStorage.getItem('id')) || {});
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedOption, setSelectedOption] = useState('all');
-   
+
 
     const path = "http://localhost:5000/api/v1/activities/";
 
@@ -26,7 +26,7 @@ function App() {
 
                 response.data.forEach((item, index) => {
                     activity[index] = item.activity;
-                    ckbox[item.id] = item.status;
+                    ckbox[index] = item.status;
                     ids[index] = item.id;
                 });
 
@@ -52,8 +52,8 @@ function App() {
 
     // Função para adicionar nova tarefa
     const handleAddTask = () => {
-        const newText = prompt("Digite o novo nome");
-
+        const newText = document.getElementById('new-task-term-id').value
+        
         if (newText && newText.trim() !== "") {
             const updatedTasks = [...tasks, newText.trim()];
             setTasks(updatedTasks);
@@ -68,6 +68,7 @@ function App() {
                     const updatedIds = [...ids, newId];
                     setIds(updatedIds);
                     localStorage.setItem('id', JSON.stringify(updatedIds));
+                    document.getElementById('new-task-term-id').value = ''
                 })
                 .catch(error => console.error(error));
         }
@@ -115,7 +116,7 @@ function App() {
 
     // Função para lidar com mudanças no estado do checkbox
     const handleCheckboxChange = (index) => {
-        
+
         axios.patch(path + ids[index], {
             status: !checkboxes[index],
         }).then(() => {
@@ -176,6 +177,7 @@ function App() {
                         <img
                             src=".\menu-svgrepo-com.svg"
                             alt="Menu"
+                            title="Clique para acessar os filtros"
                             className="h-6 w-6"
                         />
                     </summary>
@@ -238,11 +240,10 @@ function App() {
                         {/* AREA DE PESQUISA DE TAREFAS */}
                         <div className="flex gap-2 w-full">
                             <input
+                                id="new-task-term-id"
                                 type="text"
                                 className="w-full px-4 py-2 rounded-lg border-gray-300 focus:outline-none focus:border-blue-500"
-                                id="todo-input"
-                                placeholder="Pesquisar tarefa"
-                                onChange={(e) => searchValue(e.target.value)}
+                                placeholder="Adicionar tarefa"
                             />
                         </div>
 

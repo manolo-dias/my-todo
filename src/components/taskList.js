@@ -10,7 +10,7 @@ const TaskList = ({
     handleEditTask
 }) => {
     return (
-        <ul id="todo-list" class="buttons max-h-[78vh]  overflow-y-scroll ">
+        <ul id="todo-list" class="buttons max-h-[80vh]  overflow-y-scroll ">
             {tasks.map((task, index) => (
                 <div
                     role="tasks elements"

@@ -6,14 +6,15 @@ import TaskList from './components/taskList';
 import HeadLine from './components/headline';
 import Footer from './components/footer';
 import StatusFilter from './components/statusFilter';
-localStorage.setItem('selected-option', 'all');
 
 function App() {
     // representa as tarefas na tela. setTasks eh usado pra manipular seu valor no DOM além de popular a tela com os dados do cache
     const [tasks, setTasks] = useState(JSON.parse(localStorage.getItem('tasks')) || []);
     const [checkboxes, setCheckboxes] = useState(JSON.parse(localStorage.getItem('status')) || {});
     const [ids, setIds] = useState(JSON.parse(localStorage.getItem('id')) || {});
-    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedOption, setSelectedOption] = useState(localStorage.getItem('selected-option') || 'all');
+    const [filteredTasks, setFilteredTasks] = useState(tasks);
+
     const TITLE = "My Todo";
     const PATH = "http://localhost:5000/api/v1/activities/";
 
@@ -25,7 +26,6 @@ function App() {
                 const activity = [];
                 const ckbox = [];
                 const ids = [];
-                console.log(response.data.a);
 
                 response.data.forEach((item, index) => {
                     activity[index] = item.activity;
@@ -33,18 +33,38 @@ function App() {
                     ids[index] = item.id;
                 })
 
-                const savedTasks = activity || [];
-                const savedCheckboxes = ckbox || [];
-                const savedIds = ids || [];
-
-                setTasks(savedTasks);
-                setCheckboxes(savedCheckboxes);
-                setIds(savedIds);
+                setTasks(activity);
+                setCheckboxes(ckbox);
+                setIds(ids);
 
             })
             .catch(error => console.error(error));
     }, []);
 
+
+    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    useEffect(() => {
+        filterTasks(selectedOption);
+    }, [selectedOption, tasks, checkboxes]);
+
+    const filterTasks = (option) => {
+        let newFilteredTasks;
+        switch (option) {
+            case 'done':
+                newFilteredTasks = tasks.filter((_, index) => checkboxes[index] === true);
+                break;
+            case 'todo':
+                newFilteredTasks = tasks.filter((_, index) => checkboxes[index] === false);
+                break;
+            case 'all':
+            default:
+                newFilteredTasks = tasks;
+                break;
+        }
+        setFilteredTasks(newFilteredTasks);
+    };
+
+    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
     // Atualizar localStorage sempre que as tarefas ou checkboxes mudarem
     useEffect(() => {
@@ -140,7 +160,9 @@ function App() {
         setSearchTerm(value);
     };
 
-
+    const handleFilterChange = (option) => {
+        setSelectedOption(option);
+    };
 
     return (
         <div className="mx-auto">
@@ -153,7 +175,7 @@ function App() {
                 {/* Título  */}
                 <HeadLine title={TITLE} />
 
-                <StatusFilter status={checkboxes} tasks={tasks} />
+                <StatusFilter status={checkboxes} tasks={tasks} onFilterChange={handleFilterChange} />
 
             </div>
 
@@ -162,9 +184,9 @@ function App() {
 
             <div className="mx-auto mt-4">
 
-                <TaskList
-                    tasks={JSON.parse(localStorage.getItem('tasks'))}
-                    checkboxes={JSON.parse(localStorage.getItem('status'))}
+            <TaskList
+                    tasks={filteredTasks}
+                    checkboxes={filteredTasks.map((status, _) => checkboxes[tasks.indexOf(status)] || false)}
                     handleCheckboxChange={handleCheckboxChange}
                     handleDeleteTask={handleDeleteTask}
                     handleEditTask={handleEditTask}

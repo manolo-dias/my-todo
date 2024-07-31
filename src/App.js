@@ -42,7 +42,6 @@ function App() {
     }, []);
 
 
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     useEffect(() => {
         filterTasks(selectedOption);
     }, [selectedOption, tasks, checkboxes]);
@@ -64,7 +63,6 @@ function App() {
         setFilteredTasks(newFilteredTasks);
     };
 
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
     // Atualizar localStorage sempre que as tarefas ou checkboxes mudarem
     useEffect(() => {

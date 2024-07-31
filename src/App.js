@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import axios from 'axios';
 import TaskList from './components/taskList';
+import HeadLine from './components/headline';
+import Footer from './components/footer';
 
 function App() {
     // representa as tarefas na tela. setTasks eh usado pra manipular seu valor no DOM além de popular a tela com os dados do cache
@@ -12,13 +14,13 @@ function App() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedOption, setSelectedOption] = useState('all');
 
-
-    const path = "http://localhost:5000/api/v1/activities/";
+    const TITLE = "My Todo";
+    const PATH = "http://localhost:5000/api/v1/activities/";
 
 
     // Busca dados da api
     useEffect(() => {
-        axios.get(path)
+        axios.get(PATH)
             .then(response => {
                 const activity = [];
                 const ckbox = [];
@@ -62,7 +64,7 @@ function App() {
                 activity: newText.trim(),
             };
 
-            axios.post(path, postData)
+            axios.post(PATH, postData)
                 .then(response => {
                     const newId = response.data.id;
                     const updatedIds = [...ids, newId];
@@ -76,7 +78,7 @@ function App() {
 
     // Função para deletar uma tarefa
     const handleDeleteTask = (index) => {
-        axios.delete(path + ids[index])
+        axios.delete(PATH + ids[index])
             .then(() => {
                 const updatedTasks = tasks.filter((_, i) => i !== index);
                 const updatedCheckboxes = { ...checkboxes };
@@ -97,7 +99,7 @@ function App() {
         if (newText !== null) {
             const updatedTasks = tasks.map((task, i) => (i === index ? newText.trim() : task));
 
-            axios.patch(path + ids[index], {
+            axios.patch(PATH + ids[index], {
                 activity: updatedTasks[index],
             }, {
                 headers: {
@@ -117,7 +119,7 @@ function App() {
     // Função para lidar com mudanças no estado do checkbox
     const handleCheckboxChange = (index) => {
 
-        axios.patch(path + ids[index], {
+        axios.patch(PATH + ids[index], {
             status: !checkboxes[index],
         }).then(() => {
             setCheckboxes((prev) => ({
@@ -172,7 +174,7 @@ function App() {
             <div className=" z-10 flex px-2 py-2 w-full bg-[#202020]">
                 {/* Menu de filtros */}
 
-                <details className='absolute'>
+                {/* <details className='absolute'>
                     <summary className="list-none cursor-pointer pt-4 flex pl-10 items-center">
                         <img
                             src=".\menu-svgrepo-com.svg"
@@ -219,16 +221,14 @@ function App() {
                             <label htmlFor="option-nao-concluidas" className="text-sm text-gray-500 ml-3">Não concluídas</label>
                         </div>
                     </ul>
-                </details>
+                </details> */}
 
                 {/* Título  */}
-                <h1 className="flex flex-grow mt-1 text-white justify-center text-3xl font-semibold mb-4 ">
-                    My Todo
-                </h1>
-                
+            <HeadLine title={TITLE}/>
             </div>
-            <hr className='border-[#00af5d]'/>
-            
+
+            <hr className='border-[#00af5d]' />
+
             <div className="mx-auto mt-4">
 
                 <TaskList
@@ -239,32 +239,8 @@ function App() {
                     handleDeleteTask={handleDeleteTask}
                     handleEditTask={handleEditTask}
                 />
-                <div className="flex items-center bg-[#1b1b1b] pt-10 pb-4 fixed bottom-0 left-0 right-0">
+               <Footer handleAddTask={handleAddTask}/>
 
-                    <div className="flex mb-[18px] w-full">
-                        {/* AREA DE ADIÇÃO DE TAREFAS */}
-                        <div className="flex gap-2 w-full ml-[20%]">
-                            <input
-                                id="new-task-term-id"
-                                type="text"
-                                className="w-full px-4 py-2  rounded-xl border-gray-300 focus:outline-none focus:border-blue-500"
-                                placeholder="Adicionar tarefa"
-                            />
-                        </div>
-
-                        {/* BOTÃO DE ADICIONAR TAREFAS */}
-
-                        <div class="flex ml-4 mr-[20%]">
-                            <button data-testid="create-button"
-                                className=" whitespace-nowrap  bg-[#00af5d] hover:bg-[#008d4b] text-white font-bold py-2 px-6 rounded-3xl"
-                                onClick={handleAddTask}
-                            >
-                                + Nova
-                            </button>
-
-                        </div>
-                    </div>
-                </div>
             </div>
 
 

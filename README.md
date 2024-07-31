@@ -1,4 +1,4 @@
-# My Toto
+# My Todo
 
 O projeto se trata de uma aplicação de gerenciamento de tarefas que permite aos usuários adicionar, editar e excluir tarefas.
 

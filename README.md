@@ -4,7 +4,7 @@ O projeto se trata de uma aplicação de gerenciamento de tarefas que permite ao
 
 ## 🚀 Início
 
-Essas instruções permitirão que você obtenha uma cópia do projeto em funcionamento na sua máquina local para fins testes.
+Essas instruções permitirão que você obtenha uma cópia do projeto em funcionamento na sua máquina local para fins de testes.
 
 ### 📋 Requisitos
 
@@ -16,7 +16,7 @@ Essas instruções permitirão que você obtenha uma cópia do projeto em funcio
 1. **Clone o repositório**:
     ```bash
     git clone https://github.com/manolo-dias/my-todo
-    cd seu-repositorio
+    cd my-todo
     ```
 
 2. **Instale as dependências**:

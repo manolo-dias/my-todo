@@ -4,7 +4,7 @@ O projeto se trata de uma aplicação de gerenciamento de tarefas que permite ao
 
 ## 🚀 Início
 
-Essas instruções permitirão que você obtenha uma cópia do projeto em funcionamento na sua máquina local para fins de desenvolvimento e teste.
+Essas instruções permitirão que você obtenha uma cópia do projeto em funcionamento na sua máquina local para fins testes.
 
 ### 📋 Requisitos
 
@@ -46,7 +46,9 @@ Em outro terminal, rode
 Agora você está pronto para usar!
 
 1. Abra o navegador e vá para [http://localhost:3000](http://localhost:3000).
-2. Use a interface da aplicação para adicionar, editar e excluir tarefas.
+2. Use a interface da aplicação para adicionar, editar, excluir tarefas e filtrar tarefas concluidas, por fazer e todas.
+3. O aplicativo tambem se comporta diferente em celulares para trazer mais conforto ao usuário, apenas redimensione a tela para testar.
+4. Tarefaz podem ser marcadas como cumpridas clicando nelas ou no checkbox 
 
 ### 🔄 Testes
 

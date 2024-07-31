@@ -52,6 +52,6 @@ Agora você está pronto para usar!
 
 Para rodar os testes, use o comando:
 
-    ```bash
+    
     npm test
-    ```
+    

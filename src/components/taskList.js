@@ -29,6 +29,7 @@ const TaskList = ({
                     <li className="w-full flex items-center justify-between py-4">
                         <label className="flex items-center">
                             <input
+                            
                                 type="checkbox"
                                 className="mr-2"
                                 checked={checkboxes[index]}

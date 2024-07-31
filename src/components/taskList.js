@@ -4,7 +4,6 @@ import React from 'react';
 const TaskList = ({
     tasks,
     checkboxes,
-    selectedOption,
     handleCheckboxChange,
     handleDeleteTask,
     handleEditTask
@@ -19,9 +18,9 @@ const TaskList = ({
                     onClick={() => handleCheckboxChange(index)}
                     style={{
                         display:
-                            selectedOption === 'all' ||
-                                (selectedOption === 'done' && checkboxes[index]) ||
-                                (selectedOption === 'todo' && !checkboxes[index])
+                            localStorage.getItem('selected-option') === 'all' ||
+                                (localStorage.getItem('selected-option') === 'done' && checkboxes[index]) ||
+                                (localStorage.getItem('selected-option') === 'todo' && !checkboxes[index])
                                 ? 'block'
                                 : 'none',
                     }}

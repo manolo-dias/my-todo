@@ -2,8 +2,6 @@
   text-align: center;
 }
 
-
-
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -13,6 +11,29 @@
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
+}
+
+body{
+  background-color: #202020;
+}
+*{
+  font-family: "Roboto", sans-serif;
+}
+
+*{
+  scrollbar-width: thin;
+  scrollbar-color: #00af5d #202020;
+}
+*::-webkit-scrollbar {
+  width: 16px;
+}
+*::-webkit-scrollbar-track {
+  background: #202020;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #00af5d;
+  border-radius: 10px;
+  border: 3px none #202020;
 }
 
 .App-header {

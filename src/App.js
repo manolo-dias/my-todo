@@ -53,7 +53,7 @@ function App() {
     // Função para adicionar nova tarefa
     const handleAddTask = () => {
         const newText = document.getElementById('new-task-term-id').value
-        
+
         if (newText && newText.trim() !== "") {
             const updatedTasks = [...tasks, newText.trim()];
             setTasks(updatedTasks);
@@ -167,9 +167,9 @@ function App() {
     }
 
     return (
-        <div className= "mx-auto ">
+        <div className="mx-auto">
 
-            <div className="flex px-2 w-full justify-self-center bg-[#0ED5B74D]">
+            <div className=" z-10 flex px-2 py-2 w-full bg-[#202020]">
                 {/* Menu de filtros */}
 
                 <details className='absolute'>
@@ -222,52 +222,54 @@ function App() {
                 </details>
 
                 {/* Título  */}
-                <h1 className="flex flex-grow mt-1 justify-center text-3xl font-semibold mb-4 ">
+                <h1 className="flex flex-grow mt-1 text-white justify-center text-3xl font-semibold mb-4 ">
                     My Todo
                 </h1>
+                
             </div>
+            <hr className='border-[#00af5d]'/>
+            
+            <div className="mx-auto mt-4">
 
-            <div className="md:w-1/2 mx-auto mt-4">
-                <div className="bg-[#0ED5B74D] shadow-2xl p-6">
-                    <div className="flex items-center">
+                <TaskList
+                    tasks={tasks}
+                    checkboxes={checkboxes}
+                    selectedOption={selectedOption}
+                    handleCheckboxChange={handleCheckboxChange}
+                    handleDeleteTask={handleDeleteTask}
+                    handleEditTask={handleEditTask}
+                />
+                <div className="flex items-center bg-[#1b1b1b] pt-10 pb-4 fixed bottom-0 left-0 right-0">
 
-
-                       <div className="flex mb-[18px] w-full">
-                         {/* AREA DE PESQUISA DE TAREFAS */}
-                         <div className="flex gap-2 w-full">
+                    <div className="flex mb-[18px] w-full">
+                        {/* AREA DE ADIÇÃO DE TAREFAS */}
+                        <div className="flex gap-2 w-full ml-[20%]">
                             <input
                                 id="new-task-term-id"
                                 type="text"
-                                className="w-full px-4 py-2  rounded-lg border-gray-300 focus:outline-none focus:border-blue-500"
+                                className="w-full px-4 py-2  rounded-xl border-gray-300 focus:outline-none focus:border-blue-500"
                                 placeholder="Adicionar tarefa"
                             />
                         </div>
 
                         {/* BOTÃO DE ADICIONAR TAREFAS */}
 
-                        <div class="flex ml-4">
-                            <button
-                                className=" whitespace-nowrap  bg-teal-400 hover:bg-teal-500 focus:ring-teal-300 text-white font-bold py-2 px-6 rounded-3xl"
+                        <div class="flex ml-4 mr-[20%]">
+                            <button data-testid="create-button"
+                                className=" whitespace-nowrap  bg-[#00af5d] hover:bg-[#008d4b] text-white font-bold py-2 px-6 rounded-3xl"
                                 onClick={handleAddTask}
                             >
                                 + Nova
                             </button>
 
                         </div>
-                       </div>
                     </div>
-
-                    <TaskList
-                        tasks={tasks}
-                        checkboxes={checkboxes}
-                        selectedOption={selectedOption}
-                        handleCheckboxChange={handleCheckboxChange}
-                        handleDeleteTask={handleDeleteTask}
-                        handleEditTask={handleEditTask}
-                    />
                 </div>
             </div>
+
+
         </div>
+
     );
 }
 

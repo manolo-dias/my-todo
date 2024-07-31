@@ -48,7 +48,7 @@ Agora você está pronto para usar!
 1. Abra o navegador e vá para [http://localhost:3000](http://localhost:3000).
 2. Use a interface da aplicação para adicionar, editar, excluir tarefas e filtrar tarefas concluidas, por fazer e todas.
 3. O aplicativo tambem se comporta diferente em celulares para trazer mais conforto ao usuário, apenas redimensione a tela para testar.
-4. Tarefaz podem ser marcadas como cumpridas clicando nelas ou no checkbox 
+4. Tarefas podem ser marcadas como cumpridas clicando nelas ou no checkbox 
 
 ### 🔄 Testes
 

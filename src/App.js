@@ -163,7 +163,7 @@ function App() {
     };
 
     return (
-        <div className="mx-auto">
+        <div >
 
             <div className=" z-10 flex px-2 py-2 w-full bg-[#202020]">
                 {/* Menu de filtros */}
@@ -174,22 +174,23 @@ function App() {
                 <HeadLine title={TITLE} />
 
                 <StatusFilter status={checkboxes} tasks={tasks} onFilterChange={handleFilterChange} />
-
+                
             </div>
+
 
             <hr className='border-[#00af5d]' />
 
 
             <div className="mx-auto mt-4">
 
-            <TaskList
+                <TaskList
                     tasks={filteredTasks}
                     checkboxes={filteredTasks.map((status, _) => checkboxes[tasks.indexOf(status)] || false)}
                     handleCheckboxChange={handleCheckboxChange}
                     handleDeleteTask={handleDeleteTask}
                     handleEditTask={handleEditTask}
                 />
-                
+
 
                 <Footer handleAddTask={handleAddTask} />
 

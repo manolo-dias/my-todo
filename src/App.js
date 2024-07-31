@@ -8,7 +8,6 @@ import Footer from './components/footer';
 import StatusFilter from './components/statusFilter';
 
 function App() {
-    // representa as tarefas na tela. setTasks eh usado pra manipular seu valor no DOM além de popular a tela com os dados do cache
     const [tasks, setTasks] = useState(JSON.parse(localStorage.getItem('tasks')) || []);
     const [checkboxes, setCheckboxes] = useState(JSON.parse(localStorage.getItem('status')) || {});
     const [ids, setIds] = useState(JSON.parse(localStorage.getItem('id')) || {});
@@ -153,10 +152,6 @@ function App() {
 
     };
 
-    // Função para atualizar o termo de pesquisa
-    const searchValue = (value) => {
-        setSearchTerm(value);
-    };
 
     const handleFilterChange = (option) => {
         setSelectedOption(option);
@@ -166,11 +161,8 @@ function App() {
         <div >
 
             <div className=" z-10 flex px-2 py-2 w-full bg-[#202020]">
-                {/* Menu de filtros */}
 
-
-
-                {/* Título  */}
+                {/* Título e filtros */}
                 <HeadLine title={TITLE} />
 
                 <StatusFilter status={checkboxes} tasks={tasks} onFilterChange={handleFilterChange} />
@@ -182,7 +174,7 @@ function App() {
 
 
             <div className="mx-auto mt-4">
-
+                
                 <TaskList
                     tasks={filteredTasks}
                     checkboxes={filteredTasks.map((status, _) => checkboxes[tasks.indexOf(status)] || false)}

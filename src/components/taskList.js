@@ -14,7 +14,7 @@ const TaskList = ({
                 <div
                     role="tasks elements"
                     key={index}
-                    className="mb-5 ease-in-out hover:scale-[102%] w-[60%] mx-auto px-4 py-2 my-2 font-medium text-center text-black capitalize transition-transform duration-300 transform focus:outline-none focus:ring bg-white rounded-md hover:bg-[#116d42] focus:ring-opacity-80"
+                    className="mb-5 ease-in-out hover:scale-[102%]  w-[90%] sm:w-[60%] mx-auto px-4 py-2 my-2 font-medium text-center text-black capitalize transition-transform duration-300 transform focus:outline-none focus:ring bg-white rounded-md hover:bg-[#116d42] focus:ring-opacity-80"
                     onClick={() => handleCheckboxChange(index)}
                     style={{
                         display:
@@ -37,7 +37,7 @@ const TaskList = ({
                             {/* se a checkbox for marcada, grifa o texto */}
                             <span className={checkboxes[index] ? 'line-through' : ''}>{task}</span>
                         </label>
-                        <div>
+                        <div className='flex'>
                             <button
                                 data-testid="delete-button"
                                 className="mr-2 align-middle"
